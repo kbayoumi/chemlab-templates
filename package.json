@@ -25,5 +25,9 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next build"
-  }
+  },
+  "engines": {
+  "node": ">=20.9.0"
 }
+}
+
