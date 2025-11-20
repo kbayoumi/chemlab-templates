@@ -6,6 +6,7 @@ import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, 
 
 // Google OAuth configuration
 const GOOGLE_CLIENT_ID = '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com';
 
 // Template definitions with Synthetic Lab Notebook added
 const templates = [
@@ -490,12 +491,14 @@ export default function ChemLabTemplates() {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
   const initializeGoogleSignIn = () => {
-    if (window.google) {
+    if (window.google && GOOGLE_CLIENT_ID !== '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com') {
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse,
@@ -528,11 +531,15 @@ export default function ChemLabTemplates() {
   };
 
   const handleGoogleSignIn = () => {
+    if (GOOGLE_CLIENT_ID === '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com') {
+      alert('Google Sign-In is not configured. Please add your Google Client ID in the environment variables.');
+      return;
+    }
+
     if (window.google && googleLoaded) {
       window.google.accounts.id.prompt((notification) => {
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // Fallback to button click
-          document.getElementById('google-signin-button')?.click();
+          console.log('Google Sign-In prompt not displayed');
         }
       });
     } else {
