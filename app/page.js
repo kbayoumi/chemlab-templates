@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut, Upload } from 'lucide-react';
+
 
 // Google OAuth configuration
 const GOOGLE_CLIENT_ID = '107685820793848879890';
@@ -459,6 +460,7 @@ const templates = [
 const categories = ["All", "Synthesis", "Preparation", "Analysis", "Inventory", "Equipment", "Safety", "Education", "Documentation", "Planning"];
 
 export default function ChemLabTemplates() {
+  const [googleLoaded, setGoogleLoaded] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [formData, setFormData] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
