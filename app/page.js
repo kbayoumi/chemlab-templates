@@ -10,33 +10,96 @@ const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
 
 // Template definitions with Synthetic Lab Notebook added
 const templates = [
-  {
-    id: 21,
-    name: "Synthetic Lab Notebook",
-    icon: BookOpen,
-    category: "Synthesis",
-    fields: [
-      { label: "Date", type: "date" },
-      { label: "Experiment Number", type: "text", placeholder: "e.g., EXP-2025-001" },
-      { label: "Target Compound", type: "text", placeholder: "Compound name or code..." },
-      { label: "Objective", type: "textarea", placeholder: "What are you trying to synthesize or achieve..." },
-      { label: "Reaction Scheme", type: "textarea", placeholder: "Describe the reaction pathway..." },
-      { label: "Starting Materials", type: "table", columns: ["Material", "MW (g/mol)", "Amount (g)", "mmol", "Equiv", "Supplier"] },
-      { label: "Reagents & Catalysts", type: "table", columns: ["Reagent", "Amount", "Purity", "Notes"] },
-      { label: "Solvents", type: "textarea", placeholder: "List solvents used and volumes..." },
-      { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step procedure..." },
-      { label: "Reaction Conditions", type: "textarea", placeholder: "Temperature, time, atmosphere, stirring rate..." },
-      { label: "Observations", type: "textarea", placeholder: "Color changes, gas evolution, temperature changes..." },
-      { label: "Work-up Procedure", type: "textarea", placeholder: "Extraction, washing, drying steps..." },
-      { label: "Purification Method", type: "text", placeholder: "Column chromatography, recrystallization..." },
-      { label: "Crude Yield", type: "text", placeholder: "Weight and appearance..." },
-      { label: "Pure Yield", type: "text", placeholder: "Final weight and % yield..." },
-      { label: "Characterization Data", type: "textarea", placeholder: "NMR, MS, IR, melting point..." },
-      { label: "TLC Analysis", type: "text", placeholder: "Rf values, solvent system..." },
-      { label: "Conclusion", type: "textarea", placeholder: "Success, issues, next steps..." },
-      { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
-    ]
-  },
+{
+  id: 21,
+  name: "Synthetic Lab Notebook",
+  icon: BookOpen,
+  category: "Synthesis",
+  fields: [
+    { 
+      label: "Date & Time", 
+      type: "datetime",
+      fields: [
+        { label: "Date", type: "date" },
+        { label: "Time", type: "time" }
+      ]
+    },
+    { label: "Experiment Number", type: "text", placeholder: "e.g., EXP-2025-001" },
+    { label: "Target Compound", type: "text", placeholder: "Compound name or code..." },
+    { label: "Objective", type: "textarea", placeholder: "What are you trying to synthesize or achieve..." },
+    { label: "Reaction Scheme", type: "textarea", placeholder: "Describe the reaction pathway..." },
+    { 
+      label: "Reaction Equation", 
+      type: "image-upload",
+      buttonText: "Upload Reaction Equation Image"
+    },
+    { label: "Starting Materials", type: "table", columns: ["Material", "MW (g/mol)", "Amount (g)", "mmol", "Equiv", "Supplier"] },
+    { 
+      label: "Reagents & Catalysts", 
+      type: "table", 
+      columns: [
+        { name: "Type", type: "radio", options: ["Reactant", "Solvent"] },
+        "Chemical Name",
+        "MW",
+        "Mole",
+        "g",
+        "d",
+        "ml",
+        "Purity",
+        "Notes"
+      ]
+    },
+    { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step procedure..." },
+    { 
+      label: "Reaction Conditions", 
+      type: "group",
+      fields: [
+        { label: "Temperature", type: "text", placeholder: "e.g., 25°C, reflux..." },
+        { label: "Pressure", type: "text", placeholder: "e.g., atmospheric, 5 atm..." },
+        { label: "Time", type: "text", placeholder: "e.g., 2 hours, overnight..." },
+        { label: "Stirring Rate", type: "text", placeholder: "e.g., 500 rpm..." }
+      ]
+    },
+    { 
+      label: "Observations", 
+      type: "group",
+      fields: [
+        { label: "Color Changes", type: "text", placeholder: "Describe any color changes observed..." },
+        { label: "Gas Evolution", type: "text", placeholder: "Describe any gas evolution..." },
+        { label: "Temperature Changes", type: "text", placeholder: "Describe temperature changes..." },
+        { label: "Other", type: "text", placeholder: "Other observations..." }
+      ]
+    },
+    { label: "Work-up Procedure", type: "textarea", placeholder: "Extraction, washing, drying steps..." },
+    { label: "Purification Method", type: "text", placeholder: "Column chromatography, recrystallization..." },
+    { label: "Crude Yield", type: "text", placeholder: "Weight and appearance..." },
+    { label: "Pure Yield", type: "text", placeholder: "Final weight and % yield..." },
+    { 
+      label: "TLC Analysis", 
+      type: "multi-image-upload",
+      uploadButtons: [
+        { label: "Upload TLC Image 1", id: "tlc1" },
+        { label: "Upload TLC Image 2", id: "tlc2" },
+        { label: "Upload TLC Image 3", id: "tlc3" }
+      ]
+    },
+    { 
+      label: "Product Characteristics", 
+      type: "table", 
+      columns: ["Crystal", "Powder", "Color", "MP", "Other"]
+    },
+    { 
+      label: "Product Spectroscopy", 
+      type: "table", 
+      columns: ["IR", "MS", "H NMR", "C NMR", "Other"]
+    },
+    { label: "Characterization Data", type: "textarea", placeholder: "Additional NMR, MS, IR, melting point data..." },
+    { label: "Notes", type: "textarea", placeholder: "Additional notes, comments, or observations..." },
+    { label: "Hazard Information", type: "textarea", placeholder: "Safety concerns, hazardous materials, protective equipment used..." },
+    { label: "Conclusion", type: "textarea", placeholder: "Success, issues, next steps..." },
+    { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
+  ]
+}
 {
     id: 1,
     name: "Reaction Planning",
