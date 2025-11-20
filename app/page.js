@@ -99,7 +99,7 @@ const templates = [
     { label: "Conclusion", type: "textarea", placeholder: "Success, issues, next steps..." },
     { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
   ]
-}
+},
 {
     id: 1,
     name: "Reaction Planning",
