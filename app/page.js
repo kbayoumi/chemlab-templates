@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut, Upload } from 'lucide-react';
 
 // Google OAuth configuration
-const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
+const GOOGLE_CLIENT_ID = '928054957452-tgasuimfaq2v2h488665l2rrc1gf4tm2.apps.googleusercontent.com';
 
 // Template definitions with Synthetic Lab Notebook added
 const templates = [
