@@ -1,95 +1,42 @@
 'use client';
 
+'use client';
+
 import React, { useState, useRef } from 'react';
-import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut, Upload } from 'lucide-react';
+import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut } from 'lucide-react';
 
 // Google OAuth configuration
-const GOOGLE_CLIENT_ID = '928054957452-tgasuimfaq2v2h488665l2rrc1gf4tm2.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
 
 // Template definitions with Synthetic Lab Notebook added
 const templates = [
-{
-  id: 21,
-  name: "Synthetic Lab Notebook",
-  icon: BookOpen,
-  category: "Synthesis",
-  fields: [
-    { 
-      label: "Date & Time", 
-      type: "datetime",
-      fields: [
-        { label: "Date", type: "date" },
-        { label: "Time", type: "time" }
-      ]
-    },
-    { label: "Experiment Number", type: "text", placeholder: "e.g., EXP-2025-001" },
-    { label: "Target Compound", type: "text", placeholder: "Compound name or code..." },
-    { label: "Objective", type: "textarea", placeholder: "What are you trying to synthesize or achieve..." },
-    { label: "Reaction Scheme", type: "textarea", placeholder: "Describe the reaction pathway..." },
-    { 
-      label: "Reaction Equation", 
-      type: "image-upload",
-      buttonText: "Upload Reaction Equation Image"
-    },
-    { label: "Starting Materials", type: "table", columns: ["Material", "MW (g/mol)", "Amount (g)", "mmol", "Equiv", "Supplier"] },
-    { 
-      label: "Reagents & Catalysts", 
-      type: "table", 
-      columns: ["Type", "Chemical Name", "MW", "Mole", "g", "d", "ml", "Purity", "Notes"],
-      hasRadio: true,
-      radioOptions: ["Reactant", "Solvent"]
-    },
-    { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step procedure..." },
-    { 
-      label: "Reaction Conditions", 
-      type: "group",
-      fields: [
-        { label: "Temperature", type: "text", placeholder: "e.g., 25°C, reflux..." },
-        { label: "Pressure", type: "text", placeholder: "e.g., atmospheric, 5 atm..." },
-        { label: "Time", type: "text", placeholder: "e.g., 2 hours, overnight..." },
-        { label: "Stirring Rate", type: "text", placeholder: "e.g., 500 rpm..." }
-      ]
-    },
-    { 
-      label: "Observations", 
-      type: "group",
-      fields: [
-        { label: "Color Changes", type: "text", placeholder: "Describe any color changes observed..." },
-        { label: "Gas Evolution", type: "text", placeholder: "Describe any gas evolution..." },
-        { label: "Temperature Changes", type: "text", placeholder: "Describe temperature changes..." },
-        { label: "Other", type: "text", placeholder: "Other observations..." }
-      ]
-    },
-    { label: "Work-up Procedure", type: "textarea", placeholder: "Extraction, washing, drying steps..." },
-    { label: "Purification Method", type: "text", placeholder: "Column chromatography, recrystallization..." },
-    { label: "Crude Yield", type: "text", placeholder: "Weight and appearance..." },
-    { label: "Pure Yield", type: "text", placeholder: "Final weight and % yield..." },
-    { 
-      label: "TLC Analysis", 
-      type: "multi-image-upload",
-      uploadButtons: [
-        { label: "Upload TLC Image 1", id: "tlc1" },
-        { label: "Upload TLC Image 2", id: "tlc2" },
-        { label: "Upload TLC Image 3", id: "tlc3" }
-      ]
-    },
-    { 
-      label: "Product Characteristics", 
-      type: "table", 
-      columns: ["Crystal", "Powder", "Color", "MP", "Other"]
-    },
-    { 
-      label: "Product Spectroscopy", 
-      type: "table", 
-      columns: ["IR", "MS", "H NMR", "C NMR", "Other"]
-    },
-    { label: "Characterization Data", type: "textarea", placeholder: "Additional NMR, MS, IR, melting point data..." },
-    { label: "Notes", type: "textarea", placeholder: "Additional notes, comments, or observations..." },
-    { label: "Hazard Information", type: "textarea", placeholder: "Safety concerns, hazardous materials, protective equipment used..." },
-    { label: "Conclusion", type: "textarea", placeholder: "Success, issues, next steps..." },
-    { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
-  ]
-},
+  {
+    id: 21,
+    name: "Synthetic Lab Notebook",
+    icon: BookOpen,
+    category: "Synthesis",
+    fields: [
+      { label: "Date", type: "date" },
+      { label: "Experiment Number", type: "text", placeholder: "e.g., EXP-2025-001" },
+      { label: "Target Compound", type: "text", placeholder: "Compound name or code..." },
+      { label: "Objective", type: "textarea", placeholder: "What are you trying to synthesize or achieve..." },
+      { label: "Reaction Scheme", type: "textarea", placeholder: "Describe the reaction pathway..." },
+      { label: "Starting Materials", type: "table", columns: ["Material", "MW (g/mol)", "Amount (g)", "mmol", "Equiv", "Supplier"] },
+      { label: "Reagents & Catalysts", type: "table", columns: ["Reagent", "Amount", "Purity", "Notes"] },
+      { label: "Solvents", type: "textarea", placeholder: "List solvents used and volumes..." },
+      { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step procedure..." },
+      { label: "Reaction Conditions", type: "textarea", placeholder: "Temperature, time, atmosphere, stirring rate..." },
+      { label: "Observations", type: "textarea", placeholder: "Color changes, gas evolution, temperature changes..." },
+      { label: "Work-up Procedure", type: "textarea", placeholder: "Extraction, washing, drying steps..." },
+      { label: "Purification Method", type: "text", placeholder: "Column chromatography, recrystallization..." },
+      { label: "Crude Yield", type: "text", placeholder: "Weight and appearance..." },
+      { label: "Pure Yield", type: "text", placeholder: "Final weight and % yield..." },
+      { label: "Characterization Data", type: "textarea", placeholder: "NMR, MS, IR, melting point..." },
+      { label: "TLC Analysis", type: "text", placeholder: "Rf values, solvent system..." },
+      { label: "Conclusion", type: "textarea", placeholder: "Success, issues, next steps..." },
+      { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
+    ]
+  },
 {
     id: 1,
     name: "Reaction Planning",
@@ -475,73 +422,17 @@ export default function ChemLabTemplates() {
     return matchesSearch && matchesCategory;
   });
 
-  // Load Google Identity Services
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      setGoogleLoaded(true);
-      initializeGoogleSignIn();
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const initializeGoogleSignIn = () => {
-    if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse,
-        auto_select: false,
-      });
-    }
-  };
-
-  const handleCredentialResponse = (response) => {
-    // Decode JWT token to get user info
-    try {
-      const base64Url = response.credential.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      
-      const userData = JSON.parse(jsonPayload);
-      
-      setUser({
-        name: userData.name,
-        email: userData.email,
-        picture: userData.picture,
-        token: response.credential
-      });
-    } catch (error) {
-      console.error('Error parsing credential:', error);
-      alert('Failed to sign in. Please try again.');
-    }
-  };
-
   const handleGoogleSignIn = () => {
-    if (window.google && googleLoaded) {
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // Fallback to button click
-          document.getElementById('google-signin-button')?.click();
-        }
-      });
-    } else {
-      alert('Google Sign-In is still loading. Please wait a moment and try again.');
-    }
+    alert('To enable Google Drive integration:\n\n1. Set up Google OAuth 2.0 at console.cloud.google.com\n2. Enable Google Drive API\n3. Replace GOOGLE_CLIENT_ID in the code\n4. Use Google Sign-In library');
+    
+    setUser({
+      name: 'Demo User',
+      email: 'demo@example.com',
+      picture: 'https://via.placeholder.com/40'
+    });
   };
 
   const handleGoogleSignOut = () => {
-    if (window.google) {
-      window.google.accounts.id.disableAutoSelect();
-    }
     setUser(null);
   };
 
@@ -559,66 +450,18 @@ export default function ChemLabTemplates() {
     setSavingToDrive(true);
 
     try {
-      // Load Google Drive API
-      const gapi = window.gapi;
-      if (!gapi) {
-        throw new Error('Google API not loaded');
-      }
-
-      // Initialize Google Drive API
-      await new Promise((resolve, reject) => {
-        gapi.load('client', async () => {
-          try {
-            await gapi.client.init({
-              apiKey: 'AQ.Ab8RN6JPE759EXf3udlTps8EfVgg3QVVkxxV1gUpQ7R0zYWMAQ', // You'll need to add this
-              discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-            });
-            
-            gapi.client.setToken({ access_token: user.token });
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        });
-      });
-
-      // Generate document content
       const docContent = generateDocumentContent();
-      const blob = new Blob([docContent], { type: 'text/plain' });
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Create file metadata
-      const metadata = {
-        name: `${selectedTemplate.name} - ${new Date().toLocaleDateString()}.txt`,
-        mimeType: 'text/plain',
-      };
-
-      // Upload to Google Drive
-      const form = new FormData();
-      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-      form.append('file', blob);
-
-      const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        },
-        body: form
-      });
-
-      if (response.ok) {
-        alert('Document saved to Google Drive successfully!');
-      } else {
-        throw new Error('Failed to save to Google Drive');
-      }
+      alert('Document would be saved to Google Drive as:\n"' + selectedTemplate.name + ' - ' + new Date().toLocaleDateString() + '.pdf"\n\nTo implement: Use Google Drive API v3');
       
     } catch (error) {
-      console.error('Error saving to Drive:', error);
-      alert('Error saving to Google Drive. Note: You need to enable Google Drive API and add an API key for full functionality.');
+      alert('Error saving to Google Drive: ' + error.message);
     } finally {
       setSavingToDrive(false);
     }
   };
-  
+
   const generateDocumentContent = () => {
     let content = selectedTemplate.name + '\n';
     content += 'Generated: ' + new Date().toLocaleString() + '\n\n';
@@ -630,10 +473,6 @@ export default function ChemLabTemplates() {
         if (Array.isArray(value)) {
           value.forEach(row => {
             content += row.join(' | ') + '\n';
-          });
-        } else if (typeof value === 'object') {
-          Object.keys(value).forEach(key => {
-            content += key + ': ' + value[key] + '\n';
           });
         } else {
           content += value + '\n';
@@ -650,32 +489,6 @@ export default function ChemLabTemplates() {
       ...prev,
       [fieldLabel]: value
     }));
-  };
-
-  const handleGroupFieldChange = (groupLabel, subfieldLabel, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [groupLabel]: {
-        ...(prev[groupLabel] || {}),
-        [subfieldLabel]: value
-      }
-    }));
-  };
-
-  const handleImageUpload = (fieldLabel, imageId, file) => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({
-          ...prev,
-          [fieldLabel]: {
-            ...(prev[fieldLabel] || {}),
-            [imageId]: reader.result
-          }
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleTableChange = (fieldLabel, rowIndex, colIndex, value) => {
@@ -724,124 +537,6 @@ export default function ChemLabTemplates() {
   const renderField = (field, index) => {
     const value = formData[field.label] || '';
 
-    // Handle datetime group (Date & Time)
-    if (field.type === 'datetime' && field.fields) {
-      return (
-        <div key={index} className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
-          <div className="grid grid-cols-2 gap-4">
-            {field.fields.map((subfield, idx) => (
-              <div key={idx}>
-                <label className="block text-xs text-gray-600 mb-1">{subfield.label}</label>
-                <input
-                  type={subfield.type}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  value={value[subfield.label] || ''}
-                  onChange={(e) => handleGroupFieldChange(field.label, subfield.label, e.target.value)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    // Handle grouped fields (Reaction Conditions, Observations)
-    if (field.type === 'group' && field.fields) {
-      return (
-        <div key={index} className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-3">{field.label}</label>
-          <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
-            {field.fields.map((subfield, idx) => (
-              <div key={idx}>
-                <label className="block text-xs font-medium text-gray-600 mb-1">{subfield.label}</label>
-                <input
-                  type={subfield.type || 'text'}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder={subfield.placeholder}
-                  value={value[subfield.label] || ''}
-                  onChange={(e) => handleGroupFieldChange(field.label, subfield.label, e.target.value)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    // Handle single image upload
-    if (field.type === 'image-upload') {
-      return (
-        <div key={index} className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 cursor-pointer transition-colors">
-              <Upload className="w-5 h-5" />
-              {field.buttonText || 'Upload Image'}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleImageUpload(field.label, 'main', e.target.files[0])}
-              />
-            </label>
-            {value?.main && (
-              <div className="relative">
-                <img src={value.main} alt="Uploaded" className="h-20 w-20 object-cover rounded-lg border border-gray-300" />
-                <button
-                  onClick={() => handleFieldChange(field.label, null)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // Handle multiple image uploads
-    if (field.type === 'multi-image-upload' && field.uploadButtons) {
-      return (
-        <div key={index} className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-3">{field.label}</label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {field.uploadButtons.map((btn, btnIdx) => (
-              <div key={btnIdx} className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 cursor-pointer transition-colors justify-center">
-                  <Upload className="w-5 h-5" />
-                  {btn.label}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => handleImageUpload(field.label, btn.id, e.target.files[0])}
-                  />
-                </label>
-                {value?.[btn.id] && (
-                  <div className="relative">
-                    <img src={value[btn.id]} alt={btn.label} className="w-full h-32 object-cover rounded-lg border border-gray-300" />
-                    <button
-                      onClick={() => {
-                        const newValue = { ...value };
-                        delete newValue[btn.id];
-                        handleFieldChange(field.label, newValue);
-                      }}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    // Handle textarea
     if (field.type === 'textarea') {
       return (
         <div key={index} className="mb-6">
@@ -857,7 +552,6 @@ export default function ChemLabTemplates() {
       );
     }
 
-    // Handle select dropdown
     if (field.type === 'select') {
       return (
         <div key={index} className="mb-6">
@@ -876,7 +570,6 @@ export default function ChemLabTemplates() {
       );
     }
 
-    // Handle table with optional radio buttons
     if (field.type === 'table') {
       const tableData = formData[field.label] || [new Array(field.columns.length).fill('')];
       return (
@@ -887,9 +580,7 @@ export default function ChemLabTemplates() {
               <thead className="bg-gray-50">
                 <tr>
                   {field.columns.map((col, i) => (
-                    <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase whitespace-nowrap">
-                      {col}
-                    </th>
+                    <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{col}</th>
                   ))}
                 </tr>
               </thead>
@@ -898,25 +589,12 @@ export default function ChemLabTemplates() {
                   <tr key={rowIdx} className="border-t border-gray-200">
                     {field.columns.map((col, colIdx) => (
                       <td key={colIdx} className="px-4 py-2">
-                        {field.hasRadio && colIdx === 0 ? (
-                          <select
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                            value={row[colIdx] || ''}
-                            onChange={(e) => handleTableChange(field.label, rowIdx, colIdx, e.target.value)}
-                          >
-                            <option value="">Select...</option>
-                            {field.radioOptions.map(opt => (
-                              <option key={opt} value={opt}>{opt}</option>
-                            ))}
-                          </select>
-                        ) : (
-                          <input
-                            type="text"
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                            value={row[colIdx] || ''}
-                            onChange={(e) => handleTableChange(field.label, rowIdx, colIdx, e.target.value)}
-                          />
-                        )}
+                        <input
+                          type="text"
+                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                          value={row[colIdx] || ''}
+                          onChange={(e) => handleTableChange(field.label, rowIdx, colIdx, e.target.value)}
+                        />
                       </td>
                     ))}
                   </tr>
@@ -934,7 +612,6 @@ export default function ChemLabTemplates() {
       );
     }
 
-    // Handle regular input fields (text, date, time, email, etc.)
     return (
       <div key={index} className="mb-6">
         <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
@@ -970,9 +647,8 @@ export default function ChemLabTemplates() {
               
               {selectedTemplate.fields.map((field, idx) => {
                 const value = formData[field.label];
-                if (!value || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0)) return null;
+                if (!value || (Array.isArray(value) && value.length === 0)) return null;
 
-                // Handle table preview
                 if (field.type === 'table') {
                   return (
                     <div key={idx} className="mb-6">
@@ -999,37 +675,6 @@ export default function ChemLabTemplates() {
                   );
                 }
 
-                // Handle group fields preview
-                if (field.type === 'group' || field.type === 'datetime') {
-                  return (
-                    <div key={idx} className="mb-6">
-                      <h3 className="font-semibold text-gray-900 mb-2 text-lg">{field.label}</h3>
-                      <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-                        {Object.entries(value).map(([key, val]) => (
-                          <div key={key}>
-                            <span className="font-medium text-gray-700">{key}:</span> {val}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                }
-
-                // Handle image uploads preview
-                if ((field.type === 'image-upload' || field.type === 'multi-image-upload') && typeof value === 'object') {
-                  return (
-                    <div key={idx} className="mb-6">
-                      <h3 className="font-semibold text-gray-900 mb-3 text-lg">{field.label}</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {Object.entries(value).map(([key, imgSrc]) => (
-                          <img key={key} src={imgSrc} alt={key} className="w-full h-48 object-contain rounded-lg border border-gray-300" />
-                        ))}
-                      </div>
-                    </div>
-                  );
-                }
-
-                // Handle regular text fields
                 return (
                   <div key={idx} className="mb-6">
                     <h3 className="font-semibold text-gray-900 mb-2 text-lg">{field.label}</h3>
