@@ -37,7 +37,7 @@ const templates = [
       { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
     ]
   },
-  {
+{
     id: 1,
     name: "Reaction Planning",
     icon: Beaker,
@@ -77,7 +77,7 @@ const templates = [
     fields: [
       { label: "Sample ID", type: "text", placeholder: "Unique sample identifier..." },
       { label: "NMR Data", type: "textarea", placeholder: "Chemical shifts, coupling constants..." },
-      { label: "IR Data", type: "textarea", placeholder: "Key absorption bands..." },
+      { label: "IR Data", type: "textarea", placeholder: "Key absorption bands (cm⁻¹)..." },
       { label: "Mass Spec", type: "textarea", placeholder: "m/z values, fragmentation pattern..." },
       { label: "HPLC/GC Run Info", type: "textarea", placeholder: "Retention time, method..." },
       { label: "Purity %", type: "text", placeholder: "Enter purity percentage..." },
@@ -92,14 +92,14 @@ const templates = [
     fields: [
       { label: "Compound Code", type: "text", placeholder: "e.g., ABC-001..." },
       { label: "Compound Name", type: "text", placeholder: "IUPAC or common name..." },
-      { label: "Structure Description", type: "textarea", placeholder: "Describe structure..." },
+      { label: "Structure Description", type: "textarea", placeholder: "Describe structure or attach image..." },
       { label: "Molecular Formula", type: "text", placeholder: "e.g., C10H12N2O..." },
       { label: "Molecular Weight", type: "text", placeholder: "g/mol..." },
       { label: "Purity", type: "text", placeholder: "% purity..." },
       { label: "Storage Location", type: "text", placeholder: "Shelf, freezer, cabinet..." },
       { label: "Quantity", type: "text", placeholder: "Amount and unit..." },
       { label: "Date Received", type: "date" },
-      { label: "Stability Notes", type: "textarea", placeholder: "Storage conditions..." }
+      { label: "Stability Notes", type: "textarea", placeholder: "Storage conditions, stability..." }
     ]
   },
   {
@@ -143,11 +143,11 @@ const templates = [
     category: "Synthesis",
     fields: [
       { label: "Sample ID", type: "text", placeholder: "Compound identifier..." },
-      { label: "Purification Method", type: "text", placeholder: "Column chromatography..." },
+      { label: "Purification Method", type: "text", placeholder: "Column chromatography, recrystallization..." },
       { label: "Solvent System", type: "text", placeholder: "e.g., Hexane:EtOAc 3:1..." },
       { label: "Column Size/Conditions", type: "text", placeholder: "Dimensions, flow rate..." },
-      { label: "TLC Rf Values", type: "text", placeholder: "Rf of product..." },
-      { label: "Fractions Collected", type: "textarea", placeholder: "Fraction numbers..." },
+      { label: "TLC Rf Values", type: "text", placeholder: "Rf of product and impurities..." },
+      { label: "Fractions Collected", type: "textarea", placeholder: "Fraction numbers and observations..." },
       { label: "Crude Mass", type: "text", placeholder: "Starting material weight..." },
       { label: "Pure Mass", type: "text", placeholder: "Final product weight..." },
       { label: "Yield %", type: "text", placeholder: "Calculate percentage..." }
@@ -159,14 +159,14 @@ const templates = [
     icon: Shield,
     category: "Safety",
     fields: [
-      { label: "Task Description", type: "textarea", placeholder: "Describe the experiment..." },
-      { label: "Chemicals Involved", type: "textarea", placeholder: "List all chemicals..." },
-      { label: "Hazards Identified", type: "textarea", placeholder: "Physical, health hazards..." },
+      { label: "Task Description", type: "textarea", placeholder: "Describe the experiment or procedure..." },
+      { label: "Chemicals Involved", type: "textarea", placeholder: "List all chemicals with hazards..." },
+      { label: "Hazards Identified", type: "textarea", placeholder: "Physical, health, environmental hazards..." },
       { label: "Risk Level", type: "select", options: ["Low", "Medium", "High", "Extreme"] },
-      { label: "PPE Required", type: "textarea", placeholder: "Gloves, goggles..." },
-      { label: "Engineering Controls", type: "textarea", placeholder: "Fume hood..." },
-      { label: "Risk Mitigation Steps", type: "textarea", placeholder: "Procedures..." },
-      { label: "Emergency Procedures", type: "textarea", placeholder: "Spill response..." },
+      { label: "PPE Required", type: "textarea", placeholder: "Gloves, goggles, lab coat, respirator..." },
+      { label: "Engineering Controls", type: "textarea", placeholder: "Fume hood, ventilation..." },
+      { label: "Risk Mitigation Steps", type: "textarea", placeholder: "Procedures to minimize risk..." },
+      { label: "Emergency Procedures", type: "textarea", placeholder: "Spill response, first aid..." },
       { label: "Assessed By", type: "text" },
       { label: "Date", type: "date" }
     ]
@@ -180,13 +180,225 @@ const templates = [
       { label: "Waste Type", type: "text", placeholder: "Organic, aqueous, solid..." },
       { label: "Contents Description", type: "textarea", placeholder: "Chemicals in waste..." },
       { label: "Date Generated", type: "date" },
-      { label: "Container ID", type: "text", placeholder: "Container label..." },
+      { label: "Container ID", type: "text", placeholder: "Container label/number..." },
       { label: "Volume/Mass", type: "text", placeholder: "Amount of waste..." },
-      { label: "Hazard Class", type: "text", placeholder: "Flammable, toxic..." },
+      { label: "Hazard Class", type: "text", placeholder: "Flammable, toxic, corrosive..." },
       { label: "pH (if applicable)", type: "text" },
       { label: "Generated By", type: "text" },
       { label: "Disposal Approval", type: "text", placeholder: "Authorized by..." },
       { label: "Disposal Date", type: "date" }
+    ]
+  },
+  {
+    id: 10,
+    name: "Calibration Log",
+    icon: Settings,
+    category: "Equipment",
+    fields: [
+      { label: "Instrument", type: "text", placeholder: "Balance, pH meter, pipette..." },
+      { label: "Instrument ID", type: "text" },
+      { label: "Calibration Type", type: "text", placeholder: "Standard, verification..." },
+      { label: "Standard Used", type: "text", placeholder: "Reference material..." },
+      { label: "Standard Lot Number", type: "text" },
+      { label: "Calibration Date", type: "date" },
+      { label: "Next Calibration Due", type: "date" },
+      { label: "Results", type: "textarea", placeholder: "Calibration readings, pass/fail..." },
+      { label: "Calibrated By", type: "text" },
+      { label: "Notes", type: "textarea" }
+    ]
+  },
+  {
+    id: 11,
+    name: "Equipment Maintenance Log",
+    icon: Settings,
+    category: "Equipment",
+    fields: [
+      { label: "Instrument", type: "text", placeholder: "NMR, HPLC, GC-MS..." },
+      { label: "Instrument ID", type: "text" },
+      { label: "Date", type: "date" },
+      { label: "Maintenance Type", type: "select", options: ["Preventive", "Repair", "Service", "Emergency"] },
+      { label: "Issue/Error Description", type: "textarea", placeholder: "Describe problem if repair..." },
+      { label: "Maintenance Performed", type: "textarea", placeholder: "Actions taken..." },
+      { label: "Parts Replaced", type: "textarea", placeholder: "List replaced components..." },
+      { label: "Technician/Service Engineer", type: "text" },
+      { label: "Cost", type: "text" },
+      { label: "Next Maintenance Due", type: "date" },
+      { label: "Instrument Status", type: "select", options: ["Operational", "Down", "Limited Use"] }
+    ]
+  },
+  {
+    id: 12,
+    name: "Equipment Booking",
+    icon: Calendar,
+    category: "Equipment",
+    fields: [
+      { label: "Equipment", type: "text", placeholder: "Instrument name..." },
+      { label: "User Name", type: "text" },
+      { label: "User Email", type: "email" },
+      { label: "Date", type: "date" },
+      { label: "Start Time", type: "time" },
+      { label: "End Time", type: "time" },
+      { label: "Purpose", type: "textarea", placeholder: "Brief description of experiment..." },
+      { label: "Samples", type: "text", placeholder: "Number of samples..." },
+      { label: "Special Requirements", type: "textarea", placeholder: "Special conditions needed..." }
+    ]
+  },
+  {
+    id: 13,
+    name: "Sample Submission Form",
+    icon: FileText,
+    category: "Analysis",
+    fields: [
+      { label: "Sample ID", type: "text" },
+      { label: "User Name", type: "text" },
+      { label: "Contact Email", type: "email" },
+      { label: "Date Submitted", type: "date" },
+      { label: "Analysis Requested", type: "textarea", placeholder: "NMR, MS, HPLC, etc..." },
+      { label: "Sample Type", type: "text", placeholder: "Solid, liquid, solution..." },
+      { label: "Solvent (if applicable)", type: "text" },
+      { label: "Expected Structure", type: "textarea", placeholder: "Molecular formula, structure..." },
+      { label: "Urgency", type: "select", options: ["Routine", "Urgent", "Rush"] },
+      { label: "Special Instructions", type: "textarea" }
+    ]
+  },
+  {
+    id: 14,
+    name: "Temperature/Freezer Monitoring",
+    icon: Clock,
+    category: "Safety",
+    fields: [
+      { label: "Location", type: "text", placeholder: "Room number, equipment ID..." },
+      { label: "Equipment Type", type: "text", placeholder: "Freezer, refrigerator, incubator..." },
+      { label: "Date", type: "date" },
+      { label: "Time", type: "time" },
+      { label: "Temperature Reading", type: "text", placeholder: "°C or °F..." },
+      { label: "Set Point", type: "text", placeholder: "Target temperature..." },
+      { label: "Condition", type: "select", options: ["Normal", "Out of Range", "Alarm"] },
+      { label: "Alarms/Issues", type: "textarea", placeholder: "Any problems observed..." },
+      { label: "Checked By", type: "text" },
+      { label: "Action Taken", type: "textarea" }
+    ]
+  },
+  {
+    id: 15,
+    name: "Lab Cleaning & Inspection Checklist",
+    icon: ClipboardCheck,
+    category: "Safety",
+    fields: [
+      { label: "Date", type: "date" },
+      { label: "Inspector", type: "text" },
+      { label: "Fume Hood Condition", type: "select", options: ["Good", "Needs Attention", "Not Working"] },
+      { label: "Fume Hood Notes", type: "textarea" },
+      { label: "Chemical Storage", type: "select", options: ["Organized", "Needs Organization", "Safety Issues"] },
+      { label: "Chemical Storage Notes", type: "textarea" },
+      { label: "Expired Materials Removed", type: "select", options: ["Yes", "No", "N/A"] },
+      { label: "Safety Equipment Functional", type: "select", options: ["All Functional", "Some Issues", "Critical Issues"] },
+      { label: "Safety Equipment Notes", type: "textarea" },
+      { label: "Overall Lab Cleanliness", type: "select", options: ["Excellent", "Good", "Fair", "Poor"] },
+      { label: "Issues Found", type: "textarea" },
+      { label: "Corrective Actions", type: "textarea" }
+    ]
+  },
+  {
+    id: 16,
+    name: "Student Experiment Template",
+    icon: BookOpen,
+    category: "Education",
+    fields: [
+      { label: "Experiment Title", type: "text" },
+      { label: "Student Name", type: "text" },
+      { label: "Date", type: "date" },
+      { label: "Learning Goals", type: "textarea", placeholder: "What should students learn..." },
+      { label: "Introduction/Theory", type: "textarea" },
+      { label: "Materials Needed", type: "textarea" },
+      { label: "Procedure", type: "textarea", placeholder: "Step-by-step instructions..." },
+      { label: "Data Table", type: "table", columns: ["Observation", "Result", "Notes"] },
+      { label: "Calculations", type: "textarea" },
+      { label: "Results", type: "textarea" },
+      { label: "Discussion Questions", type: "textarea" },
+      { label: "Conclusion", type: "textarea" }
+    ]
+  },
+  {
+    id: 17,
+    name: "Assessment Template",
+    icon: FileCheck,
+    category: "Education",
+    fields: [
+      { label: "Experiment Name", type: "text" },
+      { label: "Student Name", type: "text" },
+      { label: "Date", type: "date" },
+      { label: "Pre-Lab Questions", type: "textarea", placeholder: "Questions and answers..." },
+      { label: "Pre-Lab Score", type: "text", placeholder: "Score/Total..." },
+      { label: "Technique Observations", type: "textarea", placeholder: "Assess lab technique..." },
+      { label: "Safety Compliance", type: "select", options: ["Excellent", "Good", "Satisfactory", "Needs Improvement"] },
+      { label: "Data Quality", type: "select", options: ["Excellent", "Good", "Satisfactory", "Poor"] },
+      { label: "Post-Lab Questions", type: "textarea" },
+      { label: "Post-Lab Score", type: "text" },
+      { label: "Overall Grade", type: "text" },
+      { label: "Feedback/Comments", type: "textarea" }
+    ]
+  },
+  {
+    id: 18,
+    name: "SOP Template",
+    icon: FileText,
+    category: "Documentation",
+    fields: [
+      { label: "SOP Title", type: "text" },
+      { label: "SOP Number", type: "text" },
+      { label: "Version", type: "text" },
+      { label: "Effective Date", type: "date" },
+      { label: "Author", type: "text" },
+      { label: "Purpose", type: "textarea", placeholder: "Why this SOP exists..." },
+      { label: "Scope", type: "textarea", placeholder: "What this SOP covers..." },
+      { label: "Materials Needed", type: "textarea" },
+      { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step..." },
+      { label: "Safety Warnings", type: "textarea" },
+      { label: "Quality Control", type: "textarea" },
+      { label: "Troubleshooting", type: "textarea", placeholder: "Common issues and solutions..." },
+      { label: "References", type: "textarea" }
+    ]
+  },
+  {
+    id: 19,
+    name: "Method Validation Template",
+    icon: BarChart3,
+    category: "Analysis",
+    fields: [
+      { label: "Method Name", type: "text" },
+      { label: "Analyte", type: "text" },
+      { label: "Matrix", type: "text" },
+      { label: "Date", type: "date" },
+      { label: "Analyst", type: "text" },
+      { label: "Accuracy (%)", type: "text", placeholder: "Recovery percentage..." },
+      { label: "Precision (RSD %)", type: "text" },
+      { label: "Linearity (R²)", type: "text" },
+      { label: "Concentration Range", type: "text" },
+      { label: "LOD (Limit of Detection)", type: "text" },
+      { label: "LOQ (Limit of Quantification)", type: "text" },
+      { label: "Specificity", type: "textarea", placeholder: "Interference studies..." },
+      { label: "Robustness", type: "textarea", placeholder: "Parameter variations tested..." },
+      { label: "Conclusion", type: "textarea" }
+    ]
+  },
+  {
+    id: 20,
+    name: "Project Timeline",
+    icon: Calendar,
+    category: "Planning",
+    fields: [
+      { label: "Project Title", type: "text" },
+      { label: "Project Lead", type: "text" },
+      { label: "Start Date", type: "date" },
+      { label: "Target Completion", type: "date" },
+      { label: "Objective", type: "textarea" },
+      { label: "Key Experiments", type: "textarea", placeholder: "List major experiments..." },
+      { label: "Milestones", type: "table", columns: ["Milestone", "Target Date", "Status", "Notes"] },
+      { label: "Resources Needed", type: "textarea" },
+      { label: "Risks/Challenges", type: "textarea" },
+      { label: "Current Status", type: "select", options: ["Planning", "In Progress", "On Hold", "Completed"] },
+      { label: "Notes", type: "textarea" }
     ]
   }
 ];
