@@ -1,97 +1,96 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut, Upload } from 'lucide-react';
 
-// Google OAuth configuration - REPLACE WITH YOUR CLIENT ID FROM GOOGLE CLOUD CONSOLE
-// This will use the environment variable from Netlify, or fallback to a placeholder
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com';
+// Google OAuth configuration
+const GOOGLE_CLIENT_ID = '928054957452-tgasuimfaq2v2h488665l2rrc1gf4tm2.apps.googleusercontent.com';
 
-// Template definitions - keeping all 21 templates
+// Template definitions with Synthetic Lab Notebook added
 const templates = [
-  {
-    id: 21,
-    name: "Synthetic Lab Notebook",
-    icon: BookOpen,
-    category: "Synthesis",
-    fields: [
-      { 
-        label: "Date & Time", 
-        type: "datetime",
-        fields: [
-          { label: "Date", type: "date" },
-          { label: "Time", type: "time" }
-        ]
-      },
-      { label: "Experiment Number", type: "text", placeholder: "e.g., EXP-2025-001" },
-      { label: "Target Compound", type: "text", placeholder: "Compound name or code..." },
-      { label: "Objective", type: "textarea", placeholder: "What are you trying to synthesize or achieve..." },
-      { label: "Reaction Scheme", type: "textarea", placeholder: "Describe the reaction pathway..." },
-      { 
-        label: "Reaction Equation", 
-        type: "image-upload",
-        buttonText: "Upload Reaction Equation Image"
-      },
-      { label: "Starting Materials", type: "table", columns: ["Material", "MW (g/mol)", "Amount (g)", "mmol", "Equiv", "Supplier"] },
-      { 
-        label: "Reagents & Catalysts", 
-        type: "table", 
-        columns: ["Type", "Chemical Name", "MW", "Mole", "g", "d", "ml", "Purity", "Notes"],
-        hasRadio: true,
-        radioOptions: ["Reactant", "Solvent"]
-      },
-      { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step procedure..." },
-      { 
-        label: "Reaction Conditions", 
-        type: "group",
-        fields: [
-          { label: "Temperature", type: "text", placeholder: "e.g., 25°C, reflux..." },
-          { label: "Pressure", type: "text", placeholder: "e.g., atmospheric, 5 atm..." },
-          { label: "Time", type: "text", placeholder: "e.g., 2 hours, overnight..." },
-          { label: "Stirring Rate", type: "text", placeholder: "e.g., 500 rpm..." }
-        ]
-      },
-      { 
-        label: "Observations", 
-        type: "group",
-        fields: [
-          { label: "Color Changes", type: "text", placeholder: "Describe any color changes observed..." },
-          { label: "Gas Evolution", type: "text", placeholder: "Describe any gas evolution..." },
-          { label: "Temperature Changes", type: "text", placeholder: "Describe temperature changes..." },
-          { label: "Other", type: "text", placeholder: "Other observations..." }
-        ]
-      },
-      { label: "Work-up Procedure", type: "textarea", placeholder: "Extraction, washing, drying steps..." },
-      { label: "Purification Method", type: "text", placeholder: "Column chromatography, recrystallization..." },
-      { label: "Crude Yield", type: "text", placeholder: "Weight and appearance..." },
-      { label: "Pure Yield", type: "text", placeholder: "Final weight and % yield..." },
-      { 
-        label: "TLC Analysis", 
-        type: "multi-image-upload",
-        uploadButtons: [
-          { label: "Upload TLC Image 1", id: "tlc1" },
-          { label: "Upload TLC Image 2", id: "tlc2" },
-          { label: "Upload TLC Image 3", id: "tlc3" }
-        ]
-      },
-      { 
-        label: "Product Characteristics", 
-        type: "table", 
-        columns: ["Crystal", "Powder", "Color", "MP", "Other"]
-      },
-      { 
-        label: "Product Spectroscopy", 
-        type: "table", 
-        columns: ["IR", "MS", "H NMR", "C NMR", "Other"]
-      },
-      { label: "Characterization Data", type: "textarea", placeholder: "Additional NMR, MS, IR, melting point data..." },
-      { label: "Notes", type: "textarea", placeholder: "Additional notes, comments, or observations..." },
-      { label: "Hazard Information", type: "textarea", placeholder: "Safety concerns, hazardous materials, protective equipment used..." },
-      { label: "Conclusion", type: "textarea", placeholder: "Success, issues, next steps..." },
-      { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
-    ]
-  },
-  {
+{
+  id: 21,
+  name: "Synthetic Lab Notebook",
+  icon: BookOpen,
+  category: "Synthesis",
+  fields: [
+    { 
+      label: "Date & Time", 
+      type: "datetime",
+      fields: [
+        { label: "Date", type: "date" },
+        { label: "Time", type: "time" }
+      ]
+    },
+    { label: "Experiment Number", type: "text", placeholder: "e.g., EXP-2025-001" },
+    { label: "Target Compound", type: "text", placeholder: "Compound name or code..." },
+    { label: "Objective", type: "textarea", placeholder: "What are you trying to synthesize or achieve..." },
+    { label: "Reaction Scheme", type: "textarea", placeholder: "Describe the reaction pathway..." },
+    { 
+      label: "Reaction Equation", 
+      type: "image-upload",
+      buttonText: "Upload Reaction Equation Image"
+    },
+    { label: "Starting Materials", type: "table", columns: ["Material", "MW (g/mol)", "Amount (g)", "mmol", "Equiv", "Supplier"] },
+    { 
+      label: "Reagents & Catalysts", 
+      type: "table", 
+      columns: ["Type", "Chemical Name", "MW", "Mole", "g", "d", "ml", "Purity", "Notes"],
+      hasRadio: true,
+      radioOptions: ["Reactant", "Solvent"]
+    },
+    { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step procedure..." },
+    { 
+      label: "Reaction Conditions", 
+      type: "group",
+      fields: [
+        { label: "Temperature", type: "text", placeholder: "e.g., 25°C, reflux..." },
+        { label: "Pressure", type: "text", placeholder: "e.g., atmospheric, 5 atm..." },
+        { label: "Time", type: "text", placeholder: "e.g., 2 hours, overnight..." },
+        { label: "Stirring Rate", type: "text", placeholder: "e.g., 500 rpm..." }
+      ]
+    },
+    { 
+      label: "Observations", 
+      type: "group",
+      fields: [
+        { label: "Color Changes", type: "text", placeholder: "Describe any color changes observed..." },
+        { label: "Gas Evolution", type: "text", placeholder: "Describe any gas evolution..." },
+        { label: "Temperature Changes", type: "text", placeholder: "Describe temperature changes..." },
+        { label: "Other", type: "text", placeholder: "Other observations..." }
+      ]
+    },
+    { label: "Work-up Procedure", type: "textarea", placeholder: "Extraction, washing, drying steps..." },
+    { label: "Purification Method", type: "text", placeholder: "Column chromatography, recrystallization..." },
+    { label: "Crude Yield", type: "text", placeholder: "Weight and appearance..." },
+    { label: "Pure Yield", type: "text", placeholder: "Final weight and % yield..." },
+    { 
+      label: "TLC Analysis", 
+      type: "multi-image-upload",
+      uploadButtons: [
+        { label: "Upload TLC Image 1", id: "tlc1" },
+        { label: "Upload TLC Image 2", id: "tlc2" },
+        { label: "Upload TLC Image 3", id: "tlc3" }
+      ]
+    },
+    { 
+      label: "Product Characteristics", 
+      type: "table", 
+      columns: ["Crystal", "Powder", "Color", "MP", "Other"]
+    },
+    { 
+      label: "Product Spectroscopy", 
+      type: "table", 
+      columns: ["IR", "MS", "H NMR", "C NMR", "Other"]
+    },
+    { label: "Characterization Data", type: "textarea", placeholder: "Additional NMR, MS, IR, melting point data..." },
+    { label: "Notes", type: "textarea", placeholder: "Additional notes, comments, or observations..." },
+    { label: "Hazard Information", type: "textarea", placeholder: "Safety concerns, hazardous materials, protective equipment used..." },
+    { label: "Conclusion", type: "textarea", placeholder: "Success, issues, next steps..." },
+    { label: "References", type: "textarea", placeholder: "Literature procedures, previous experiments..." }
+  ]
+},
+{
     id: 1,
     name: "Reaction Planning",
     icon: Beaker,
@@ -460,7 +459,6 @@ const templates = [
 const categories = ["All", "Synthesis", "Preparation", "Analysis", "Inventory", "Equipment", "Safety", "Education", "Documentation", "Planning"];
 
 export default function ChemLabTemplates() {
-  const [googleLoaded, setGoogleLoaded] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [formData, setFormData] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -468,6 +466,7 @@ export default function ChemLabTemplates() {
   const [showPreview, setShowPreview] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [user, setUser] = useState(null);
+  const [savingToDrive, setSavingToDrive] = useState(false);
   const printRef = useRef();
 
   const filteredTemplates = templates.filter(t => {
@@ -489,14 +488,12 @@ export default function ChemLabTemplates() {
     document.body.appendChild(script);
 
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
+      document.body.removeChild(script);
     };
   }, []);
 
   const initializeGoogleSignIn = () => {
-    if (window.google && GOOGLE_CLIENT_ID !== '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com') {
+    if (window.google) {
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse,
@@ -506,15 +503,13 @@ export default function ChemLabTemplates() {
   };
 
   const handleCredentialResponse = (response) => {
+    // Decode JWT token to get user info
     try {
       const base64Url = response.credential.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
       
       const userData = JSON.parse(jsonPayload);
       
@@ -522,6 +517,7 @@ export default function ChemLabTemplates() {
         name: userData.name,
         email: userData.email,
         picture: userData.picture,
+        token: response.credential
       });
     } catch (error) {
       console.error('Error parsing credential:', error);
@@ -530,15 +526,11 @@ export default function ChemLabTemplates() {
   };
 
   const handleGoogleSignIn = () => {
-    if (GOOGLE_CLIENT_ID === '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com') {
-      alert('Google Sign-In is not configured yet.\n\nTo enable it:\n1. Go to Google Cloud Console\n2. Create OAuth 2.0 credentials\n3. Add your Client ID to Netlify environment variables\n4. Add https://chemlab-templates.netlify.app to authorized origins');
-      return;
-    }
-
     if (window.google && googleLoaded) {
       window.google.accounts.id.prompt((notification) => {
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          console.log('Google Sign-In prompt not displayed');
+          // Fallback to button click
+          document.getElementById('google-signin-button')?.click();
         }
       });
     } else {
@@ -553,37 +545,95 @@ export default function ChemLabTemplates() {
     setUser(null);
   };
 
-  const generateDocumentContent = () => {
-    let content = `${selectedTemplate.name}\n`;
-    content += `Generated: ${new Date().toLocaleString()}\n`;
-    if (user) {
-      content += `User: ${user.name} (${user.email})\n`;
+  const handleSaveToGoogleDrive = async () => {
+    if (!user) {
+      alert('Please sign in with Google first');
+      return;
     }
-    content += '\n' + '='.repeat(60) + '\n\n';
+
+    if (!selectedTemplate) {
+      alert('No template selected');
+      return;
+    }
+
+    setSavingToDrive(true);
+
+    try {
+      // Load Google Drive API
+      const gapi = window.gapi;
+      if (!gapi) {
+        throw new Error('Google API not loaded');
+      }
+
+      // Initialize Google Drive API
+      await new Promise((resolve, reject) => {
+        gapi.load('client', async () => {
+          try {
+            await gapi.client.init({
+              apiKey: 'AQ.Ab8RN6JPE759EXf3udlTps8EfVgg3QVVkxxV1gUpQ7R0zYWMAQ', // You'll need to add this
+              discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+            });
+            
+            gapi.client.setToken({ access_token: user.token });
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+
+      // Generate document content
+      const docContent = generateDocumentContent();
+      const blob = new Blob([docContent], { type: 'text/plain' });
+      
+      // Create file metadata
+      const metadata = {
+        name: `${selectedTemplate.name} - ${new Date().toLocaleDateString()}.txt`,
+        mimeType: 'text/plain',
+      };
+
+      // Upload to Google Drive
+      const form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+      form.append('file', blob);
+
+      const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: form
+      });
+
+      if (response.ok) {
+        alert('Document saved to Google Drive successfully!');
+      } else {
+        throw new Error('Failed to save to Google Drive');
+      }
+      
+    } catch (error) {
+      console.error('Error saving to Drive:', error);
+      alert('Error saving to Google Drive. Note: You need to enable Google Drive API and add an API key for full functionality.');
+    } finally {
+      setSavingToDrive(false);
+    }
+  };
+  
+  const generateDocumentContent = () => {
+    let content = selectedTemplate.name + '\n';
+    content += 'Generated: ' + new Date().toLocaleString() + '\n\n';
     
     selectedTemplate.fields.forEach(field => {
       const value = formData[field.label];
       if (value) {
-        content += `${field.label}:\n`;
-        content += '-'.repeat(40) + '\n';
-        
+        content += field.label + ':\n';
         if (Array.isArray(value)) {
-          if (field.columns) {
-            content += field.columns.join(' | ') + '\n';
-            content += '-'.repeat(40) + '\n';
-          }
           value.forEach(row => {
-            if (Array.isArray(row)) {
-              content += row.join(' | ') + '\n';
-            }
+            content += row.join(' | ') + '\n';
           });
-        } else if (typeof value === 'object' && value !== null) {
+        } else if (typeof value === 'object') {
           Object.keys(value).forEach(key => {
-            if (typeof value[key] === 'string' && !value[key].startsWith('data:image')) {
-              content += `  ${key}: ${value[key]}\n`;
-            } else if (value[key]?.startsWith?.('data:image')) {
-              content += `  ${key}: [Image attached]\n`;
-            }
+            content += key + ': ' + value[key] + '\n';
           });
         } else {
           content += value + '\n';
@@ -593,24 +643,6 @@ export default function ChemLabTemplates() {
     });
     
     return content;
-  };
-
-  const handleDownloadDocument = () => {
-    if (!selectedTemplate || Object.keys(formData).length === 0) {
-      alert('Please fill out the template before downloading');
-      return;
-    }
-
-    const docContent = generateDocumentContent();
-    const blob = new Blob([docContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${selectedTemplate.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   };
 
   const handleFieldChange = (fieldLabel, value) => {
@@ -692,6 +724,7 @@ export default function ChemLabTemplates() {
   const renderField = (field, index) => {
     const value = formData[field.label] || '';
 
+    // Handle datetime group (Date & Time)
     if (field.type === 'datetime' && field.fields) {
       return (
         <div key={index} className="mb-6">
@@ -713,6 +746,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle grouped fields (Reaction Conditions, Observations)
     if (field.type === 'group' && field.fields) {
       return (
         <div key={index} className="mb-6">
@@ -735,6 +769,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle single image upload
     if (field.type === 'image-upload') {
       return (
         <div key={index} className="mb-6">
@@ -756,7 +791,6 @@ export default function ChemLabTemplates() {
                 <button
                   onClick={() => handleFieldChange(field.label, null)}
                   className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                  type="button"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -767,6 +801,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle multiple image uploads
     if (field.type === 'multi-image-upload' && field.uploadButtons) {
       return (
         <div key={index} className="mb-6">
@@ -794,7 +829,6 @@ export default function ChemLabTemplates() {
                         handleFieldChange(field.label, newValue);
                       }}
                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                      type="button"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -807,6 +841,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle textarea
     if (field.type === 'textarea') {
       return (
         <div key={index} className="mb-6">
@@ -822,6 +857,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle select dropdown
     if (field.type === 'select') {
       return (
         <div key={index} className="mb-6">
@@ -840,6 +876,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle table with optional radio buttons
     if (field.type === 'table') {
       const tableData = formData[field.label] || [new Array(field.columns.length).fill('')];
       return (
@@ -890,7 +927,6 @@ export default function ChemLabTemplates() {
           <button
             onClick={() => addTableRow(field.label, field.columns)}
             className="mt-2 px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
-            type="button"
           >
             + Add Row
           </button>
@@ -898,6 +934,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle regular input fields (text, date, time, email, etc.)
     return (
       <div key={index} className="mb-6">
         <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
@@ -920,7 +957,7 @@ export default function ChemLabTemplates() {
         <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
           <div className="p-6 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-900">Preview: {selectedTemplate.name}</h2>
-            <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-gray-100 rounded-lg" type="button">
+            <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-gray-100 rounded-lg">
               <X className="w-6 h-6" />
             </button>
           </div>
@@ -929,13 +966,13 @@ export default function ChemLabTemplates() {
               <div className="border-b pb-4 mb-4">
                 <h1 className="text-3xl font-bold text-gray-900">{selectedTemplate.name}</h1>
                 <p className="text-sm text-gray-500 mt-2">Generated: {new Date().toLocaleString()}</p>
-                {user && <p className="text-sm text-gray-600 mt-1">User: {user.name} ({user.email})</p>}
               </div>
               
               {selectedTemplate.fields.map((field, idx) => {
                 const value = formData[field.label];
                 if (!value || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0)) return null;
 
+                // Handle table preview
                 if (field.type === 'table') {
                   return (
                     <div key={idx} className="mb-6">
@@ -962,6 +999,7 @@ export default function ChemLabTemplates() {
                   );
                 }
 
+                // Handle group fields preview
                 if (field.type === 'group' || field.type === 'datetime') {
                   return (
                     <div key={idx} className="mb-6">
@@ -977,6 +1015,7 @@ export default function ChemLabTemplates() {
                   );
                 }
 
+                // Handle image uploads preview
                 if ((field.type === 'image-upload' || field.type === 'multi-image-upload') && typeof value === 'object') {
                   return (
                     <div key={idx} className="mb-6">
@@ -990,6 +1029,7 @@ export default function ChemLabTemplates() {
                   );
                 }
 
+                // Handle regular text fields
                 return (
                   <div key={idx} className="mb-6">
                     <h3 className="font-semibold text-gray-900 mb-2 text-lg">{field.label}</h3>
@@ -1000,18 +1040,24 @@ export default function ChemLabTemplates() {
             </div>
           </div>
           <div className="p-6 border-t border-gray-200 flex gap-3 no-print">
-            <button onClick={handlePrint} className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2" type="button">
+            <button onClick={handlePrint} className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
               <Printer className="w-5 h-5" />
               Print
             </button>
-            <button onClick={handleSavePDF} className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2" type="button">
+            <button onClick={handleSavePDF} className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2">
               <Download className="w-5 h-5" />
               Save PDF
             </button>
-            <button onClick={handleDownloadDocument} className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2" type="button">
-              <Save className="w-5 h-5" />
-              Download
-            </button>
+            {user && (
+              <button 
+                onClick={handleSaveToGoogleDrive} 
+                disabled={savingToDrive}
+                className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <Save className="w-5 h-5" />
+                {savingToDrive ? 'Saving...' : 'Save to Drive'}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -1024,7 +1070,7 @@ export default function ChemLabTemplates() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 hover:bg-gray-100 rounded-lg" type="button">
+              <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 hover:bg-gray-100 rounded-lg">
                 <Menu className="w-6 h-6" />
               </button>
               <Beaker className="w-8 h-8 text-blue-600" />
@@ -1039,7 +1085,6 @@ export default function ChemLabTemplates() {
                 <button
                   onClick={handleGoogleSignIn}
                   className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                  type="button"
                 >
                   <LogIn className="w-5 h-5" />
                   <span className="hidden sm:inline">Sign in with Google</span>
@@ -1054,7 +1099,6 @@ export default function ChemLabTemplates() {
                   <button
                     onClick={handleGoogleSignOut}
                     className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                    type="button"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="hidden sm:inline">Sign out</span>
@@ -1088,7 +1132,6 @@ export default function ChemLabTemplates() {
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
                     className={'px-3 py-1 rounded-full text-sm font-medium transition-colors ' + (selectedCategory === cat ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200')}
-                    type="button"
                   >
                     {cat}
                   </button>
@@ -1109,7 +1152,6 @@ export default function ChemLabTemplates() {
                       setSidebarOpen(false);
                     }}
                     className={'w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ' + (selectedTemplate?.id === template.id ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'hover:bg-gray-50 text-gray-700')}
-                    type="button"
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
@@ -1167,7 +1209,6 @@ export default function ChemLabTemplates() {
                   <button
                     onClick={() => setShowPreview(true)}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 transition-colors"
-                    type="button"
                   >
                     <Eye className="w-4 h-4" />
                     Preview
@@ -1175,7 +1216,6 @@ export default function ChemLabTemplates() {
                   <button
                     onClick={handlePrint}
                     className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center gap-2 transition-colors"
-                    type="button"
                   >
                     <Printer className="w-4 h-4" />
                     Print
@@ -1183,23 +1223,23 @@ export default function ChemLabTemplates() {
                   <button
                     onClick={handleSavePDF}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 transition-colors"
-                    type="button"
                   >
                     <Download className="w-4 h-4" />
                     Save PDF
                   </button>
-                  <button
-                    onClick={handleDownloadDocument}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2 transition-colors"
-                    type="button"
-                  >
-                    <Save className="w-4 h-4" />
-                    Download TXT
-                  </button>
+                  {user && (
+                    <button
+                      onClick={handleSaveToGoogleDrive}
+                      disabled={savingToDrive}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2 transition-colors disabled:opacity-50"
+                    >
+                      <Save className="w-4 h-4" />
+                      {savingToDrive ? 'Saving...' : 'Save to Drive'}
+                    </button>
+                  )}
                   <button
                     onClick={resetForm}
                     className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex items-center gap-2 transition-colors"
-                    type="button"
                   >
                     <X className="w-4 h-4" />
                     Reset
@@ -1219,7 +1259,7 @@ export default function ChemLabTemplates() {
 
       <PreviewModal />
 
-<footer className="bg-gray-900 text-white mt-16">
+      <footer className="bg-gray-900 text-white mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <p className="text-sm text-gray-400">© 2025 ChemLab Templates. Professional Laboratory Documentation System.</p>
