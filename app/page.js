@@ -5,7 +5,7 @@ import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, 
 
 
 // Google OAuth configuration
-const GOOGLE_CLIENT_ID = '107685820793848879890';
+const GOOGLE_CLIENT_ID = '928054957452-3aooa6ju8jcn89g336d1bckm451of3kc.apps.googleusercontent.com';
 
 // Template definitions with Synthetic Lab Notebook added
 const templates = [
