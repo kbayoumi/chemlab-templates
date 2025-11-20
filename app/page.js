@@ -1,9 +1,7 @@
 'use client';
 
-'use client';
-
 import React, { useState, useRef } from 'react';
-import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut } from 'lucide-react';
+import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut, Upload } from 'lucide-react';
 
 // Google OAuth configuration
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
@@ -37,17 +35,9 @@ const templates = [
     { 
       label: "Reagents & Catalysts", 
       type: "table", 
-      columns: [
-        { name: "Type", type: "radio", options: ["Reactant", "Solvent"] },
-        "Chemical Name",
-        "MW",
-        "Mole",
-        "g",
-        "d",
-        "ml",
-        "Purity",
-        "Notes"
-      ]
+      columns: ["Type", "Chemical Name", "MW", "Mole", "g", "d", "ml", "Purity", "Notes"],
+      hasRadio: true,
+      radioOptions: ["Reactant", "Solvent"]
     },
     { label: "Procedure", type: "textarea", placeholder: "Detailed step-by-step procedure..." },
     { 
@@ -537,6 +527,10 @@ export default function ChemLabTemplates() {
           value.forEach(row => {
             content += row.join(' | ') + '\n';
           });
+        } else if (typeof value === 'object') {
+          Object.keys(value).forEach(key => {
+            content += key + ': ' + value[key] + '\n';
+          });
         } else {
           content += value + '\n';
         }
@@ -552,6 +546,32 @@ export default function ChemLabTemplates() {
       ...prev,
       [fieldLabel]: value
     }));
+  };
+
+  const handleGroupFieldChange = (groupLabel, subfieldLabel, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [groupLabel]: {
+        ...(prev[groupLabel] || {}),
+        [subfieldLabel]: value
+      }
+    }));
+  };
+
+  const handleImageUpload = (fieldLabel, imageId, file) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          [fieldLabel]: {
+            ...(prev[fieldLabel] || {}),
+            [imageId]: reader.result
+          }
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleTableChange = (fieldLabel, rowIndex, colIndex, value) => {
@@ -600,6 +620,124 @@ export default function ChemLabTemplates() {
   const renderField = (field, index) => {
     const value = formData[field.label] || '';
 
+    // Handle datetime group (Date & Time)
+    if (field.type === 'datetime' && field.fields) {
+      return (
+        <div key={index} className="mb-6">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
+          <div className="grid grid-cols-2 gap-4">
+            {field.fields.map((subfield, idx) => (
+              <div key={idx}>
+                <label className="block text-xs text-gray-600 mb-1">{subfield.label}</label>
+                <input
+                  type={subfield.type}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={value[subfield.label] || ''}
+                  onChange={(e) => handleGroupFieldChange(field.label, subfield.label, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Handle grouped fields (Reaction Conditions, Observations)
+    if (field.type === 'group' && field.fields) {
+      return (
+        <div key={index} className="mb-6">
+          <label className="block text-sm font-semibold text-gray-700 mb-3">{field.label}</label>
+          <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+            {field.fields.map((subfield, idx) => (
+              <div key={idx}>
+                <label className="block text-xs font-medium text-gray-600 mb-1">{subfield.label}</label>
+                <input
+                  type={subfield.type || 'text'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder={subfield.placeholder}
+                  value={value[subfield.label] || ''}
+                  onChange={(e) => handleGroupFieldChange(field.label, subfield.label, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Handle single image upload
+    if (field.type === 'image-upload') {
+      return (
+        <div key={index} className="mb-6">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 cursor-pointer transition-colors">
+              <Upload className="w-5 h-5" />
+              {field.buttonText || 'Upload Image'}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageUpload(field.label, 'main', e.target.files[0])}
+              />
+            </label>
+            {value?.main && (
+              <div className="relative">
+                <img src={value.main} alt="Uploaded" className="h-20 w-20 object-cover rounded-lg border border-gray-300" />
+                <button
+                  onClick={() => handleFieldChange(field.label, null)}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Handle multiple image uploads
+    if (field.type === 'multi-image-upload' && field.uploadButtons) {
+      return (
+        <div key={index} className="mb-6">
+          <label className="block text-sm font-semibold text-gray-700 mb-3">{field.label}</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {field.uploadButtons.map((btn, btnIdx) => (
+              <div key={btnIdx} className="flex flex-col gap-2">
+                <label className="flex items-center gap-2 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 cursor-pointer transition-colors justify-center">
+                  <Upload className="w-5 h-5" />
+                  {btn.label}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleImageUpload(field.label, btn.id, e.target.files[0])}
+                  />
+                </label>
+                {value?.[btn.id] && (
+                  <div className="relative">
+                    <img src={value[btn.id]} alt={btn.label} className="w-full h-32 object-cover rounded-lg border border-gray-300" />
+                    <button
+                      onClick={() => {
+                        const newValue = { ...value };
+                        delete newValue[btn.id];
+                        handleFieldChange(field.label, newValue);
+                      }}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Handle textarea
     if (field.type === 'textarea') {
       return (
         <div key={index} className="mb-6">
@@ -615,6 +753,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle select dropdown
     if (field.type === 'select') {
       return (
         <div key={index} className="mb-6">
@@ -633,6 +772,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle table with optional radio buttons
     if (field.type === 'table') {
       const tableData = formData[field.label] || [new Array(field.columns.length).fill('')];
       return (
@@ -643,7 +783,9 @@ export default function ChemLabTemplates() {
               <thead className="bg-gray-50">
                 <tr>
                   {field.columns.map((col, i) => (
-                    <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{col}</th>
+                    <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase whitespace-nowrap">
+                      {col}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -652,12 +794,25 @@ export default function ChemLabTemplates() {
                   <tr key={rowIdx} className="border-t border-gray-200">
                     {field.columns.map((col, colIdx) => (
                       <td key={colIdx} className="px-4 py-2">
-                        <input
-                          type="text"
-                          className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                          value={row[colIdx] || ''}
-                          onChange={(e) => handleTableChange(field.label, rowIdx, colIdx, e.target.value)}
-                        />
+                        {field.hasRadio && colIdx === 0 ? (
+                          <select
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                            value={row[colIdx] || ''}
+                            onChange={(e) => handleTableChange(field.label, rowIdx, colIdx, e.target.value)}
+                          >
+                            <option value="">Select...</option>
+                            {field.radioOptions.map(opt => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                            value={row[colIdx] || ''}
+                            onChange={(e) => handleTableChange(field.label, rowIdx, colIdx, e.target.value)}
+                          />
+                        )}
                       </td>
                     ))}
                   </tr>
@@ -675,6 +830,7 @@ export default function ChemLabTemplates() {
       );
     }
 
+    // Handle regular input fields (text, date, time, email, etc.)
     return (
       <div key={index} className="mb-6">
         <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
@@ -710,8 +866,9 @@ export default function ChemLabTemplates() {
               
               {selectedTemplate.fields.map((field, idx) => {
                 const value = formData[field.label];
-                if (!value || (Array.isArray(value) && value.length === 0)) return null;
+                if (!value || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0)) return null;
 
+                // Handle table preview
                 if (field.type === 'table') {
                   return (
                     <div key={idx} className="mb-6">
@@ -738,6 +895,37 @@ export default function ChemLabTemplates() {
                   );
                 }
 
+                // Handle group fields preview
+                if (field.type === 'group' || field.type === 'datetime') {
+                  return (
+                    <div key={idx} className="mb-6">
+                      <h3 className="font-semibold text-gray-900 mb-2 text-lg">{field.label}</h3>
+                      <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+                        {Object.entries(value).map(([key, val]) => (
+                          <div key={key}>
+                            <span className="font-medium text-gray-700">{key}:</span> {val}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Handle image uploads preview
+                if ((field.type === 'image-upload' || field.type === 'multi-image-upload') && typeof value === 'object') {
+                  return (
+                    <div key={idx} className="mb-6">
+                      <h3 className="font-semibold text-gray-900 mb-3 text-lg">{field.label}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {Object.entries(value).map(([key, imgSrc]) => (
+                          <img key={key} src={imgSrc} alt={key} className="w-full h-48 object-contain rounded-lg border border-gray-300" />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Handle regular text fields
                 return (
                   <div key={idx} className="mb-6">
                     <h3 className="font-semibold text-gray-900 mb-2 text-lg">{field.label}</h3>
