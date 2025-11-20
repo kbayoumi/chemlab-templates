@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { FileText, Download, Printer, Eye, Save, Search, Menu, X, ChevronRight, Beaker, Clipboard, FlaskConical, Shield, Trash2, Settings, Calendar, ClipboardCheck, BookOpen, FileCheck, BarChart3, Clock, Home, LogIn, LogOut, Upload } from 'lucide-react';
 
 // Google OAuth configuration
-const GOOGLE_CLIENT_ID = '928054957452-tgasuimfaq2v2h488665l2rrc1gf4tm2.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '107685820793848879890';
 
 // Template definitions with Synthetic Lab Notebook added
 const templates = [
@@ -475,17 +475,73 @@ export default function ChemLabTemplates() {
     return matchesSearch && matchesCategory;
   });
 
+  // Load Google Identity Services
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setGoogleLoaded(true);
+      initializeGoogleSignIn();
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const initializeGoogleSignIn = () => {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse,
+        auto_select: false,
+      });
+    }
+  };
+
+  const handleCredentialResponse = (response) => {
+    // Decode JWT token to get user info
+    try {
+      const base64Url = response.credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      
+      const userData = JSON.parse(jsonPayload);
+      
+      setUser({
+        name: userData.name,
+        email: userData.email,
+        picture: userData.picture,
+        token: response.credential
+      });
+    } catch (error) {
+      console.error('Error parsing credential:', error);
+      alert('Failed to sign in. Please try again.');
+    }
+  };
+
   const handleGoogleSignIn = () => {
-    alert('To enable Google Drive integration:\n\n1. Set up Google OAuth 2.0 at console.cloud.google.com\n2. Enable Google Drive API\n3. Replace GOOGLE_CLIENT_ID in the code\n4. Use Google Sign-In library');
-    
-    setUser({
-      name: 'Demo User',
-      email: 'demo@example.com',
-      picture: 'https://via.placeholder.com/40'
-    });
+    if (window.google && googleLoaded) {
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // Fallback to button click
+          document.getElementById('google-signin-button')?.click();
+        }
+      });
+    } else {
+      alert('Google Sign-In is still loading. Please wait a moment and try again.');
+    }
   };
 
   const handleGoogleSignOut = () => {
+    if (window.google) {
+      window.google.accounts.id.disableAutoSelect();
+    }
     setUser(null);
   };
 
@@ -503,18 +559,66 @@ export default function ChemLabTemplates() {
     setSavingToDrive(true);
 
     try {
+      // Load Google Drive API
+      const gapi = window.gapi;
+      if (!gapi) {
+        throw new Error('Google API not loaded');
+      }
+
+      // Initialize Google Drive API
+      await new Promise((resolve, reject) => {
+        gapi.load('client', async () => {
+          try {
+            await gapi.client.init({
+              apiKey: 'AQ.Ab8RN6JPE759EXf3udlTps8EfVgg3QVVkxxV1gUpQ7R0zYWMAQ', // You'll need to add this
+              discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+            });
+            
+            gapi.client.setToken({ access_token: user.token });
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+
+      // Generate document content
       const docContent = generateDocumentContent();
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const blob = new Blob([docContent], { type: 'text/plain' });
       
-      alert('Document would be saved to Google Drive as:\n"' + selectedTemplate.name + ' - ' + new Date().toLocaleDateString() + '.pdf"\n\nTo implement: Use Google Drive API v3');
+      // Create file metadata
+      const metadata = {
+        name: `${selectedTemplate.name} - ${new Date().toLocaleDateString()}.txt`,
+        mimeType: 'text/plain',
+      };
+
+      // Upload to Google Drive
+      const form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+      form.append('file', blob);
+
+      const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: form
+      });
+
+      if (response.ok) {
+        alert('Document saved to Google Drive successfully!');
+      } else {
+        throw new Error('Failed to save to Google Drive');
+      }
       
     } catch (error) {
-      alert('Error saving to Google Drive: ' + error.message);
+      console.error('Error saving to Drive:', error);
+      alert('Error saving to Google Drive. Note: You need to enable Google Drive API and add an API key for full functionality.');
     } finally {
       setSavingToDrive(false);
     }
   };
-
+  
   const generateDocumentContent = () => {
     let content = selectedTemplate.name + '\n';
     content += 'Generated: ' + new Date().toLocaleString() + '\n\n';
